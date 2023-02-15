@@ -36,16 +36,32 @@ export async function fetchData<T = any>(
   { ctx, req = ctx?.req }: CtxOrReq = {}
 ): Promise<T | null> {
   const url = `${apiBaseUrl(__NEXTAUTH)}/${path}`
+  const logs: string[] = []
   try {
     const options = req?.headers.cookie
       ? { headers: { cookie: req.headers.cookie } }
       : {}
+    logs.push("Before fetch")
     const res = await fetch(url, options)
-    const data = await res.json()
+    logs.push("After fetch")
+    logs.push(`res.ok: ${res?.ok}`)
+    logs.push(`res.status: ${res?.status}`)
+    logs.push(`res.statusText: ${res?.statusText}`)
+    logs.push(`res.type: ${res?.type}`)
+    const dataAsString = await res.text()
+    logs.push(`response body, as string: ${dataAsString}`)
+    const data = JSON.parse(dataAsString)
     if (!res.ok) throw data
     return Object.keys(data).length > 0 ? data : null // Return null if data empty
   } catch (error) {
-    logger.error("CLIENT_FETCH_ERROR", { error: error as Error, url })
+    logger.error("CLIENT_FETCH_ERROR", {
+      error: error as Error,
+      url,
+      errorType: typeof(error),
+      errorToString: error.toString(),
+      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'window=undefined',
+      logs
+    })
     return null
   }
 }
