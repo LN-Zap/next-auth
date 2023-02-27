@@ -46,44 +46,47 @@ function _fetchData() {
           case 0:
             _ref = _args.length > 3 && _args[3] !== undefined ? _args[3] : {}, ctx = _ref.ctx, _ref$req = _ref.req, req = _ref$req === void 0 ? ctx === null || ctx === void 0 ? void 0 : ctx.req : _ref$req;
             url = "".concat(apiBaseUrl(__NEXTAUTH), "/").concat(path);
-            logs = [];
+            logs = {
+              "log-1": "Init"
+            };
             _context.prev = 3;
+            logs["log-2"] = req === null || req === void 0 ? void 0 : req.headers;
             options = req !== null && req !== void 0 && req.headers.cookie ? {
               headers: {
                 cookie: req.headers.cookie
               }
             } : {};
-            logs.push("Before fetch");
-            _context.next = 8;
+            logs["log-3"] = "Before fetch";
+            _context.next = 9;
             return fetch(url, options);
 
-          case 8:
+          case 9:
             res = _context.sent;
-            logs.push("After fetch");
-            logs.push("res.ok: ".concat(res === null || res === void 0 ? void 0 : res.ok));
-            logs.push("res.status: ".concat(res === null || res === void 0 ? void 0 : res.status));
-            logs.push("res.statusText: ".concat(res === null || res === void 0 ? void 0 : res.statusText));
-            logs.push("res.type: ".concat(res === null || res === void 0 ? void 0 : res.type));
-            _context.next = 16;
+            logs["log-4"] = "After fetch";
+            logs["log-5"] = "res.ok: ".concat(res === null || res === void 0 ? void 0 : res.ok);
+            logs["log-6"] = "res.status: ".concat(res === null || res === void 0 ? void 0 : res.status);
+            logs["log-7"] = "res.statusText: ".concat(res === null || res === void 0 ? void 0 : res.statusText);
+            logs["log-8"] = "res.type: ".concat(res === null || res === void 0 ? void 0 : res.type);
+            _context.next = 17;
             return res.text();
 
-          case 16:
+          case 17:
             dataAsString = _context.sent;
-            logs.push("response body, as string: ".concat(dataAsString));
+            logs["log-9"] = "response body, as string: ".concat(dataAsString);
             data = JSON.parse(dataAsString);
 
             if (res.ok) {
-              _context.next = 21;
+              _context.next = 22;
               break;
             }
 
             throw data;
 
-          case 21:
+          case 22:
             return _context.abrupt("return", Object.keys(data).length > 0 ? data : null);
 
-          case 24:
-            _context.prev = 24;
+          case 25:
+            _context.prev = 25;
             _context.t0 = _context["catch"](3);
             logger.error("CLIENT_FETCH_ERROR", {
               error: _context.t0,
@@ -91,16 +94,17 @@ function _fetchData() {
               errorType: (0, _typeof2.default)(_context.t0),
               errorToString: _context.t0.toString(),
               userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'window=undefined',
-              logs: logs
+              logs: logs,
+              logsAsString: JSON.stringify(logs)
             });
             return _context.abrupt("return", null);
 
-          case 28:
+          case 29:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[3, 24]]);
+    }, _callee, null, [[3, 25]]);
   }));
   return _fetchData.apply(this, arguments);
 }

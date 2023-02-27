@@ -36,20 +36,22 @@ export async function fetchData<T = any>(
   { ctx, req = ctx?.req }: CtxOrReq = {}
 ): Promise<T | null> {
   const url = `${apiBaseUrl(__NEXTAUTH)}/${path}`
-  const logs: string[] = []
+  const logs: object = { "log-1": "Init" }
   try {
+    logs["log-2"] = req?.headers;
     const options = req?.headers.cookie
       ? { headers: { cookie: req.headers.cookie } }
       : {}
-    logs.push("Before fetch")
+    
+    logs["log-3"] = "Before fetch"
     const res = await fetch(url, options)
-    logs.push("After fetch")
-    logs.push(`res.ok: ${res?.ok}`)
-    logs.push(`res.status: ${res?.status}`)
-    logs.push(`res.statusText: ${res?.statusText}`)
-    logs.push(`res.type: ${res?.type}`)
+    logs["log-4"] = "After fetch"
+    logs["log-5"] = `res.ok: ${res?.ok}`
+    logs["log-6"] = `res.status: ${res?.status}`
+    logs["log-7"] = `res.statusText: ${res?.statusText}`
+    logs["log-8"] = `res.type: ${res?.type}`
     const dataAsString = await res.text()
-    logs.push(`response body, as string: ${dataAsString}`)
+    logs["log-9"] = `response body, as string: ${dataAsString}`
     const data = JSON.parse(dataAsString)
     if (!res.ok) throw data
     return Object.keys(data).length > 0 ? data : null // Return null if data empty
@@ -60,7 +62,8 @@ export async function fetchData<T = any>(
       errorType: typeof(error),
       errorToString: error.toString(),
       userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'window=undefined',
-      logs
+      logs: logs,
+      logsAsString: JSON.stringify(logs)
     })
     return null
   }
